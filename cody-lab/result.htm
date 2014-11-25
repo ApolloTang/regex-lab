@@ -102,6 +102,7 @@ $(function(){
         });
 
         var matches = re.toString() !== "/(?:)/g" ? $('#string').val().match(re) : false;
+        console.log(matches)
         $('#result').html(matches ? JSON.stringify(matches) : '<span class="bogus">That Regexp is bogus! No matches!</span>');
     })
     .trigger('keyup');
@@ -140,10 +141,12 @@ $(function(){
 
 <hr>
 <input id="my_input" type="text" name="pattern">
+<p id="text"></p>
 
 
 <script>
     var s = ' At the core of a style guide are basic formatting rules. These rules govern how the code is written at a high level. Similar to the ruled paper used in schools to teach writing, basic formatting rules guide developers toward writing code in a particular style. These rules often contain information about syntax that you may not have considered, but every piece is important in creating a coherent piece of code.'
+    $('#text').html(s);
 
     var composeReg = function(search, regex, smart, caseInsensitive) {
         search = regex ? search : _escapeRegex(search);
@@ -160,14 +163,17 @@ $(function(){
         return new RegExp(search, caseInsensitive ? 'i' : '');
     };
 
+    var _re_escape_regex = new RegExp( '(\\' + [ '/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\', '$', '^', '-' ].join('|\\') + ')', 'g' );
     var _escapeRegex = function(str) {
         return str.replace( _re_escape_regex, '\\$1' );
     };
 
 $('#my_input').on('keyup', function(){
     var inputTxt = $('#my_input').val();
-    r = composeReg( inputTxt, true, true, true );
+    r = composeReg( inputTxt, false, true, true );
     console.log(r);
+    var matches = r.toString() !== "/(?:)/g" ? s.match(r) : false;
+    console.log(matches);
 });
 
 </script>
