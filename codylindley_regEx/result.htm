@@ -1,0 +1,166 @@
+<html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>regEx by codylindley</title>
+
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+
+  <!-- <link rel="stylesheet" type="text/css" href="result&#45;light.css"> -->
+      <link rel="stylesheet" type="text/css" href="gumby.css">
+      <script type="text/javascript" src="autoGrowInput.js"></script>
+      <script type="text/javascript" src="highlight.js"></script>
+      <script type="text/javascript" src="jquery.alphanum.js"></script>
+      <script type="text/javascript" src="jquery-autogrow-textarea.js"></script>
+      <script type="text/javascript" src="json3.min.js"></script>
+  <style type="text/css">
+    html {
+    margin:10px;
+}
+body{
+    max-width:700px;
+}
+body,p,label,input{
+    font-size:12px !important;
+    line-height:1.7em !important;
+}
+
+label strong{
+    font-size:14px;
+}
+
+.highlight {
+    background:yellow;
+    font-weight:bold;
+}
+
+.info.alert{
+    font-size:12px !important;
+    color:#323232;
+    background-color: #F3F3F3;
+    border:1px solid #C2C2C2;
+}
+
+#string,#pattern{
+    text-align:center;
+    min-width:270px;
+    padding: 0px 5px;
+    height:36px;
+    margin-top:5px;
+}
+
+#flag,#string,#pattern{
+    border-radius:4px;
+    padding:8px 5px;
+    border:1px solid #ccc;
+    font-family: "Open Sans";
+font-weight: 400;
+font-size: 12px;
+    color:#555;
+}
+
+#result{
+    word-wrap: break-word;
+}
+
+#flag{
+    width:20px;
+    padding:7px 5px;
+}
+
+.bogus{
+    color:red;
+    font-weight:bold;
+}
+
+  </style>
+
+
+
+<script type="text/javascript">//<![CDATA[
+$(function(){
+var $flag = $('#flag');
+var $pattern = $('#pattern');
+var $matches = $('#matches');
+var $string = $('#string');
+
+$flag.autoGrowInput({
+    comfortZone: 0
+})
+.trigger('blur')
+.alpha({
+    disallow: 'abcdefhjklnopqrstuvwxyz',
+    allowUpper: false
+});
+
+$string.autoGrowInput({
+    comfortZone: 0
+})
+.autoGrowTextArea()
+.trigger('blur');
+
+$pattern.autoGrowInput({
+    comfortZone: 0
+})
+.autoGrowTextArea()
+.trigger('blur');
+
+$('#pattern,#flag').on('keyup', function() {
+    var re;
+    try {
+        re = new RegExp($('#pattern').val(), $('#flag').val());
+    } catch (e) {
+        $('#result').html('<span class="bogus">' + e + '</span>');
+        $('#matches').highlightRegex();
+        return false;
+    }
+
+    $('#matches').highlightRegex().highlightRegex(re, {
+        globalOn: new RegExp(/g/).test($('#flag').val())
+    });
+
+    var matches = re.toString() !== "/(?:)/g" ? $('#string').val().match(re) : false;
+    $('#result').html(matches ? JSON.stringify(matches) : '<span class="bogus">That Regexp is bogus! No matches!</span>');
+})
+.trigger('keyup');
+
+$string.on('keyup', function() {
+    $('#matches').text($(this).val());
+    $('#pattern,#flag').trigger('keyup');
+})
+.trigger('keyup');
+});//]]>
+
+</script>
+
+
+</head>
+<body>
+  <div class="info alert">string &amp; regular expression pattern:</div>
+
+<div style="text-align:center;margin-bottom:20px;">
+<table cellspacing="0" cellpadding="0" border="1">
+    <tbody><tr align="center" valign="middle">
+        <td>"</td>
+        <td><textarea id="string" class="input textarea" style="overflow: hidden; resize: none; height: 36px;">Dogs go to doggy parks!</textarea><textarea id="string" class="input textarea" style="overflow: hidden; resize: none; display: none;">Dogs go to doggy parks!</textarea></td>
+        <td><strong>"</strong>.match(<strong>/</strong></td>
+        <td><textarea id="pattern" class="input textarea" style="overflow: hidden; resize: none; height: 36px;">dog</textarea><textarea id="pattern" class="input textarea" style="overflow: hidden; resize: none; display: none;">dog</textarea></td>
+        <td><strong>/</strong></td>
+        <td><input id="flag" class="text input narrow" type="text" value=""><tester style="position: absolute; top: -9999px; left: -9999px; width: auto; font-size: 12px; font-family: 'Open Sans'; font-weight: 400; letter-spacing: 0px; white-space: nowrap;"></tester></td>
+        <td>);</td>
+    </tr>
+</tbody></table>
+</div>
+
+<div class="info alert">result of match():</div>
+<div class="field" id="result">["dog"]</div>
+
+<div class="info alert">matches (yellow highlight indicates the matches found by the pattern):</div>
+<p id="matches">Dogs go to <span class="highlight">dog</span>gy parks!</p>
+
+
+
+
+
+
+
+
+</body></html>
