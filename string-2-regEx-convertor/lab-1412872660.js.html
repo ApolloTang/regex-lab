@@ -1,0 +1,61 @@
+//<script src="http://localhost:8001/js/lib/underscore-1.4.4.js" ></script>
+//<script>
+try {
+    var _ = _ || require('underscore');
+    console.log('_.'+ _.VERSION);
+} catch(e) {
+    console.log('underscore unavailable');
+};
+
+
+
+    /**
+    Builds a regular expression object suitable for searching a table.
+
+    @param search {string} String to search for.
+    @param regex {bool} Treat as a regular expression or not.
+    @param smart {bool} Perform smart filtering or not.
+    @param caseInsensitive {bool} Do case insensitive matching or not.
+    @returns {RegExp} Constructed object.
+    @source jQuery DataTables v1.10.0's _fnFilterCreateSearch.
+    */
+    var _createSearchRegex = function(search, regex, smart, caseInsensitive) {
+        search = regex ? search : _escapeRegex(search);
+
+        if (smart) {
+            // For smart filtering, allow the search to work regardless of
+            // word order. Also double-quoted text must be preserved, so
+            // word order is important - a la google.
+            // So this is what we want to generate:
+            // ^(?=.*?\bone\b)(?=.*?\btwo three\b)(?=.*?\bfour\b).*$
+            var a = $.map(search.match( /"[^"]+"|[^ ]+/g ) || '', function (word) {
+                return word.charAt(0) === '"' ?
+                    word.match( /^"(.*)"$/ )[1] :
+                    word;
+            });
+
+            search = '^(?=.*?'+a.join( ')(?=.*?' )+').*$';
+        }
+
+        return new RegExp(search, caseInsensitive ? 'i' : '');
+    };
+
+
+    /**
+    Escapes a string such that it can be used in a regular expression.
+
+    @param str {str} String to escape.
+    @returns {str} Escaped string.
+    @source jQuery DataTables v1.10.0's _fnEscapeRegex.
+    */
+    var _escapeRegex = function(str) {
+        return str.replace( _re_escape_regex, '\\$1' );
+    };
+
+
+
+
+
+
+//</script>
+
